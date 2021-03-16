@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/MvcCoreBookstore/.vs/MvcCoreBookstore/v16
+/MvcCoreBookstore/bin/Debug/netcoreapp3.1
+/MvcCoreBookstore/obj
