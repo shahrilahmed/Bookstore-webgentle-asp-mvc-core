@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MvcCoreBookstore.Models
+namespace MvcCoreBookstore.DB
 {
-    public class BookModel
+    public class Books
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -14,7 +14,6 @@ namespace MvcCoreBookstore.Models
         public string Category { get; set; }
         public int Pages { get; set; }
         public string Language { get; set; }
-
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }

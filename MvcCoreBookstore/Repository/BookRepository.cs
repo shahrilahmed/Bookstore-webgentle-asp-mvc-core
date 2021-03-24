@@ -1,4 +1,6 @@
-﻿using MvcCoreBookstore.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MvcCoreBookstore.DB;
+using MvcCoreBookstore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +10,59 @@ namespace MvcCoreBookstore.Repository
 {
     public class BookRepository
     {
+        private readonly BookStoreContext _context = null;
 
-        public List<BookModel> GetAllBooks()
+        public BookRepository(BookStoreContext context)
         {
-            return DataSource();
+            _context = context;
         }
 
-        public BookModel GetBookById(int id)
+        public async Task<int> AddNewBook(BookModel book)
         {
-            return DataSource().Where(x => x.Id == id).FirstOrDefault();
+            var newBook = new Books()
+            {
+                Title = book.Title,
+                Author = book.Author,
+                CreatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.UtcNow,
+                Description = book.Description,
+                Pages = book.Pages
+            };
+
+            await _context.AddAsync(newBook);
+            await _context.SaveChangesAsync();
+            return newBook.Id;
+        }
+        public async Task<List<BookModel>> GetAllBooks()
+        {
+            var allBooks = await _context.Books.Select(
+                x => new BookModel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Author = x.Author,
+                    Description = x.Description,
+                    Pages = x.Pages,
+                    Category = "test Cat",
+                    Language = "test Lang"
+                }
+                ).ToListAsync();
+
+            return allBooks;
+        }
+
+        public async Task<BookModel> GetBookById(int id)
+        {
+            var book = await _context.Books.Where(x => x.Id == id).Select(x=> new BookModel {
+                Id = x.Id,
+                Title = x.Title,
+                Author = x.Author,
+                Description = x.Description,
+                Pages = x.Pages,
+                Category = x.Category,
+                Language = x.Language
+            }).FirstOrDefaultAsync();
+            return book;
         }
 
         public List<BookModel> SearchBook(string title, string authorName)

@@ -12,21 +12,43 @@ namespace MvcCoreBookstore.Controllers
     {
         private readonly BookRepository _bookRepository= null;
 
-        public BookController()
+        public BookController(BookRepository bookRepository )
         {
-            _bookRepository = new BookRepository();
+            _bookRepository = bookRepository;
         }
-        public IActionResult GetAllBooks()
+        public async Task<IActionResult> GetAllBooks()
         {
-            var data = _bookRepository.GetAllBooks();
+            dynamic data = new System.Dynamic.ExpandoObject();
+            data = await _bookRepository.GetAllBooks();
             return View(data);
         }
 
-        public ViewResult GetBook(int id)
+        public async Task<ViewResult> GetBook(int id)
         {
-            var data = _bookRepository.GetBookById(id);
+            var data = await _bookRepository.GetBookById(id);
             return View(data);
         }
         
+        public List<BookModel> SearchBook(string bookName, string authorName)
+        {
+            return _bookRepository.SearchBook(bookName, authorName);
+        }
+
+        public ViewResult AddNewBook(bool isSuccess = false)
+        {
+            ViewBag.isSuccess = isSuccess;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewBook(BookModel book)
+        {
+            var id = await _bookRepository.AddNewBook(book);
+            if (id > 0)
+            {
+                return RedirectToAction(nameof(AddNewBook), new {isSuccess = true});
+            }
+            return View();
+        }
     }
 }

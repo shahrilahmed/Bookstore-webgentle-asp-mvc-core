@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MvcCoreBookstore.Models.BookModel>
+﻿@*@model IEnumerable<BookModel>*@
 
 @{
     ViewData["Title"] = "GetAllBooks";
@@ -15,13 +15,13 @@
                 <div class="card mb-4 shadow-sm">
                     <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"></svg>
                     <div class="card-body">
-                        <h3>@Html.DisplayFor(modelItem => book.Title)</h3>
-                        <p class="card-text" style="overflow:hidden; text-overflow: ellipsis; white-space: nowrap;">@Html.DisplayFor(modelItem => book.Description)</p>
+                        <h3>@book.Title</h3>
+                        <p class="card-text" style="overflow:hidden; text-overflow: ellipsis; white-space: nowrap;">@book.Description</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
-                                <a href="~/book/getbook?id=@book.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-controller="Book" asp-action="GetBook" asp-route-id="@book.Id" class="btn btn-sm btn-outline-secondary">Details</a>
                             </div>
-                            <small class="text-muted">@Html.DisplayFor(modelItem => book.Author)</small>
+                            <small class="text-muted">@book.Author</small>
                         </div>
                     </div>
                 </div>
