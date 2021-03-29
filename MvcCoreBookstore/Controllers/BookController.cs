@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MvcCoreBookstore.Models;
 using MvcCoreBookstore.Repository;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,21 +34,45 @@ namespace MvcCoreBookstore.Controllers
             return _bookRepository.SearchBook(bookName, authorName);
         }
 
-        public ViewResult AddNewBook(bool isSuccess = false)
+        public ViewResult AddNewBook(bool isSuccess = false, int bookId=0)
         {
+            ViewBag.languageList = GetLanguages().Select(x=> new SelectListItem() { 
+                Text = x.Text
+            }).ToList();
+
+
             ViewBag.isSuccess = isSuccess;
+            ViewBag.BookId = bookId;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> AddNewBook(BookModel book)
         {
-            var id = await _bookRepository.AddNewBook(book);
-            if (id > 0)
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(AddNewBook), new {isSuccess = true});
+                var id = await _bookRepository.AddNewBook(book);
+                if (id > 0)
+                {
+                    return RedirectToAction(nameof(AddNewBook), new { isSuccess = true, bookId = id });
+                }
             }
+            ViewBag.languageList = new SelectList(GetLanguages(),"Id","Text");
+            ViewBag.isSuccess = false;
+            ViewBag.BookId = 0;
+
+            ModelState.AddModelError("", "Please check if all the required entries are provided");
+
             return View();
+        }
+
+        private List<LanguageModel> GetLanguages() {
+            return new List<LanguageModel>()
+            {
+                new LanguageModel() { Id = 1, Text = "Bangla"},
+                new LanguageModel() { Id = 2, Text = "English" },
+                new LanguageModel() { Id = 3, Text = "Arabic" }
+            };
         }
     }
 }

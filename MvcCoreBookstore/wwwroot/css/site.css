@@ -69,3 +69,16 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+#ErrorBox  {
+    
+    border-radius: 10px;
+}
+
+#ErrorBox ul li:first-child{
+    padding-top: 10px;
+}
+
+#ErrorBox ul li:last-child{
+    padding-bottom: 10px;
+}

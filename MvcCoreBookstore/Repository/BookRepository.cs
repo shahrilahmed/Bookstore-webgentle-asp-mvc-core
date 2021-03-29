@@ -26,7 +26,8 @@ namespace MvcCoreBookstore.Repository
                 CreatedOn = DateTime.UtcNow,
                 UpdatedOn = DateTime.UtcNow,
                 Description = book.Description,
-                Pages = book.Pages
+                Pages = book.Pages.HasValue? book.Pages.Value : 0,
+                Language = book.Language
             };
 
             await _context.AddAsync(newBook);
