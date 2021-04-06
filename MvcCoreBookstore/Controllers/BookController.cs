@@ -11,10 +11,12 @@ namespace MvcCoreBookstore.Controllers
     public class BookController : Controller
     {
         private readonly BookRepository _bookRepository= null;
+        private readonly LanguageRepository _languageRepository = null;
 
-        public BookController(BookRepository bookRepository )
+        public BookController(BookRepository bookRepository, LanguageRepository languageRepository)
         {
             _bookRepository = bookRepository;
+            _languageRepository = languageRepository;
         }
         public async Task<IActionResult> GetAllBooks()
         {
@@ -34,13 +36,11 @@ namespace MvcCoreBookstore.Controllers
             return _bookRepository.SearchBook(bookName, authorName);
         }
 
-        public ViewResult AddNewBook(bool isSuccess = false, int bookId=0)
+        public async Task<ViewResult> AddNewBookAsync(bool isSuccess = false, int bookId=0)
         {
-            ViewBag.languageList = GetLanguages().Select(x=> new SelectListItem() { 
-                Text = x.Text
-            }).ToList();
+            //    ViewBag.languageList = GetLanguages();
 
-
+            ViewBag.languageList = new SelectList(await _languageRepository.GetAllLanguages(), "Id", "Name");
             ViewBag.isSuccess = isSuccess;
             ViewBag.BookId = bookId;
             return View();
@@ -57,7 +57,8 @@ namespace MvcCoreBookstore.Controllers
                     return RedirectToAction(nameof(AddNewBook), new { isSuccess = true, bookId = id });
                 }
             }
-            ViewBag.languageList = new SelectList(GetLanguages(),"Id","Text");
+            ViewBag.languageList = new SelectList(await _languageRepository.GetAllLanguages(),"Id", "Name");
+            //ViewBag.languageList = GetLanguages();
             ViewBag.isSuccess = false;
             ViewBag.BookId = 0;
 
@@ -66,13 +67,20 @@ namespace MvcCoreBookstore.Controllers
             return View();
         }
 
-        private List<LanguageModel> GetLanguages() {
-            return new List<LanguageModel>()
-            {
-                new LanguageModel() { Id = 1, Text = "Bangla"},
-                new LanguageModel() { Id = 2, Text = "English" },
-                new LanguageModel() { Id = 3, Text = "Arabic" }
-            };
-        }
+        //private List<SelectListItem> GetLanguages() {
+
+        //    var Group1 = new SelectListGroup() { Name = "Group 1" };
+        //    var Group2 = new SelectListGroup() { Name = "Group 2" };
+        //    var Group3 = new SelectListGroup() { Name = "Group 3" };
+
+        //    return new List<SelectListItem>()
+        //    {
+        //        new SelectListItem() { Text = "Bangla", Value = "1", Group = Group1},
+        //        new SelectListItem() { Text = "English", Value = "2", Group = Group1},
+        //        new SelectListItem() { Text = "Arabic", Value = "3", Group = Group3 },
+        //        new SelectListItem() { Text = "Hindi", Value = "4", Group = Group2},
+        //        new SelectListItem() { Text = "Urdu", Value = "5", Group = Group3 }
+        //    };
+        //}
     }
 }
