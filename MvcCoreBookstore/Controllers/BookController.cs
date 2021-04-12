@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MvcCoreBookstore.Models;
 using MvcCoreBookstore.Repository;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,11 +16,13 @@ namespace MvcCoreBookstore.Controllers
     {
         private readonly BookRepository _bookRepository= null;
         private readonly LanguageRepository _languageRepository = null;
+        private readonly IWebHostEnvironment _webHostEnvironment = null;
 
-        public BookController(BookRepository bookRepository, LanguageRepository languageRepository)
+        public BookController(BookRepository bookRepository, LanguageRepository languageRepository, IWebHostEnvironment webHostEnvironment)
         {
             _bookRepository = bookRepository;
             _languageRepository = languageRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> GetAllBooks()
         {
@@ -49,6 +55,33 @@ namespace MvcCoreBookstore.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewBook(BookModel book)
         {
+            if (book.CoverPhoto != null)
+            {
+                string folder = "Books/Cover/";
+                book.CoverImageUrl = await UploadFile(folder, book.CoverPhoto);
+            }
+            if (book.GalleryImages != null)
+            {
+                string folder = "Books/GalleryImgs/";
+                book.GalleryImgs = new List<GalleryModel>();
+                foreach(var image in book.GalleryImages)
+                {
+                    var gallery = new GalleryModel()
+                    {
+                        Name = image.Name,
+                        URL = await UploadFile(folder, image)
+                    };
+                    book.GalleryImgs.Add(gallery);
+                }
+                //book.CoverImageUrl = await UploadImage(folder, book.CoverPhoto);
+            }
+
+            if (book.PDF != null)
+            {
+                string folder = "Books/PDF/";
+                book.PDFUrl = await UploadFile(folder, book.PDF);
+            }
+
             if (ModelState.IsValid)
             {
                 var id = await _bookRepository.AddNewBook(book);
@@ -65,6 +98,16 @@ namespace MvcCoreBookstore.Controllers
             ModelState.AddModelError("", "Please check if all the required entries are provided");
 
             return View();
+        }
+
+        private async Task<string> UploadFile(string folder, IFormFile file)
+        {
+            
+            folder += Guid.NewGuid().ToString() +"_"+ file.FileName;
+            string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folder);
+           
+            await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+            return folder;
         }
 
         //private List<SelectListItem> GetLanguages() {

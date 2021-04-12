@@ -15,7 +15,7 @@ namespace MvcCoreBookstore.DB
 
         public DbSet<Books> Books { get; set; }
         public DbSet<Language> Languages { get; set; }
-
+        public DbSet<BookGallery> BookGallery { get; set; }
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    optionsBuilder.UseSqlServer("Server=.;Database=BookStore;Integrated Security=True;");

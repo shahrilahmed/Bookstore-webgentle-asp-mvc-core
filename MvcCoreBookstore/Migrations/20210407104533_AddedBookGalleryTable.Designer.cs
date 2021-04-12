@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcCoreBookstore.DB;
 
 namespace MvcCoreBookstore.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    partial class BookStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20210407104533_AddedBookGalleryTable")]
+    partial class AddedBookGalleryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,9 @@ namespace MvcCoreBookstore.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BooksId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -37,7 +42,7 @@ namespace MvcCoreBookstore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BooksId");
 
                     b.ToTable("BookGallery");
                 });
@@ -66,9 +71,6 @@ namespace MvcCoreBookstore.Migrations
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PDFUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Pages")
                         .HasColumnType("int");
@@ -106,11 +108,9 @@ namespace MvcCoreBookstore.Migrations
 
             modelBuilder.Entity("MvcCoreBookstore.DB.BookGallery", b =>
                 {
-                    b.HasOne("MvcCoreBookstore.DB.Books", "Book")
+                    b.HasOne("MvcCoreBookstore.DB.Books", null)
                         .WithMany("bookGallery")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BooksId");
                 });
 
             modelBuilder.Entity("MvcCoreBookstore.DB.Books", b =>

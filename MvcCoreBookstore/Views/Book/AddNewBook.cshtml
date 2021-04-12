@@ -11,15 +11,19 @@
     @if (isSuccess == true)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Holy guacamole!</strong> You have added a new book successfully! <br/>
+            <strong>Holy guacamole!</strong> You have added a new book successfully! <br />
             Click <a asp-controller="Book" asp-action="GetBook" asp-route-id="@ViewBag.BookId">here</a> to view details
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
     }
-
-    <form method="post" asp-action="AddNewBook" asp-controller="Book">
+    <div class="d-flex justify-content-center" >
+        <div class="spinner-border" role="status" id="myLoader" style="display:none">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" asp-action="AddNewBook" asp-controller="Book">
 
         <div class="row">
             <div class="col-md-6">
@@ -45,9 +49,34 @@
                 <div class="form-group">
                     <label asp-for="LanguageId"></label>
                     <select class="form-control" asp-for="LanguageId" asp-items="@ViewBag.languageList" multiple>
-                        
                     </select>
 
+                </div>
+                <div class="form-group">
+                    <label asp-for="CoverPhoto"></label>
+
+                    <div class="custom-file">
+                        <input asp-for="CoverPhoto" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose Image</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GalleryImages"></label>
+
+                    <div class="custom-file">
+                        <input asp-for="GalleryImages" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose Image</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PDF"></label>
+
+                    <div class="custom-file">
+                        <input asp-for="PDF" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose PDF</label>
+                    </div>
                 </div>
                 <div class="form-group"><input class="btn btn-primary" type="submit" value="Add" /></div>
             </div>
@@ -55,5 +84,25 @@
                 <div id="ErrorBox" class="text-white bg-danger mb-3" asp-validation-summary="All" style="padding: 0px 10px;"></div>
             </div>
         </div>
-</form>
+    </form>
 </div>
+
+@section scripts {
+
+    <script>
+        function myComplete(data) {
+            alert("From Complete");
+            console.log(data);
+        }
+
+        function mySuccess(data) {
+            alert("From Success");
+            console.log(data);
+        }
+
+        function myFailure(data) {
+            alert("From Failure");
+            console.log(data);
+        }
+    </script>
+}

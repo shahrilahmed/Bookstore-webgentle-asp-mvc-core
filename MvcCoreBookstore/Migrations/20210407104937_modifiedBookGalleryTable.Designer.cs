@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcCoreBookstore.DB;
 
 namespace MvcCoreBookstore.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    partial class BookStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20210407104937_modifiedBookGalleryTable")]
+    partial class modifiedBookGalleryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,9 +68,6 @@ namespace MvcCoreBookstore.Migrations
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PDFUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Pages")
                         .HasColumnType("int");

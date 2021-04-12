@@ -29,7 +29,9 @@ namespace MvcCoreBookstore
             services.AddDbContext<BookStoreContext>(options=>options.UseSqlServer("Server=DESKTOP-RJN362I\\SQLEXPRESS;Database=BookStore;Integrated Security=True;"));
             services.AddControllersWithViews();
 #if DEBUG
-            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddRazorPages().AddRazorRuntimeCompilation().AddViewOptions(option => { 
+                option.HtmlHelperOptions.ClientValidationEnabled = false;
+            });
 #endif
             services.AddScoped<BookRepository, BookRepository>();
             services.AddScoped<LanguageRepository, LanguageRepository>();

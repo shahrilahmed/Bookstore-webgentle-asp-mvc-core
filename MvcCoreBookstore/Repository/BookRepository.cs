@@ -27,9 +27,21 @@ namespace MvcCoreBookstore.Repository
                 UpdatedOn = DateTime.UtcNow,
                 Description = book.Description,
                 Pages = book.Pages.HasValue? book.Pages.Value : 0,
-                LanguageId = book.LanguageId
+                LanguageId = book.LanguageId,
+                CoverImageUrl = book.CoverImageUrl,
+                PDFUrl = book.PDFUrl
             };
 
+            newBook.bookGallery = new List<BookGallery>();
+
+            foreach(var image in book.GalleryImgs)
+            {
+                newBook.bookGallery.Add(new BookGallery()
+                {
+                    Name = image.Name,
+                    URL = image.URL
+                });
+            }
             await _context.AddAsync(newBook);
             await _context.SaveChangesAsync();
             return newBook.Id;
@@ -44,6 +56,7 @@ namespace MvcCoreBookstore.Repository
                     Author = x.Author,
                     Description = x.Description,
                     Pages = x.Pages,
+                    CoverImageUrl = x.CoverImageUrl
                     //Category = "test Cat",
                     //Language = "test Lang"
                 }
@@ -54,7 +67,7 @@ namespace MvcCoreBookstore.Repository
 
         public async Task<BookModel> GetBookById(int id)
         {
-            var book = await _context.Books.Where(x => x.Id == id).Select(x=> new BookModel {
+            var book = await _context.Books.Where(x => x.Id == id).Select( x=> new BookModel {
                 Id = x.Id,
                 Title = x.Title,
                 Author = x.Author,
@@ -62,7 +75,10 @@ namespace MvcCoreBookstore.Repository
                 Pages = x.Pages,
                 Category = x.Category,
                 LanguageId = x.LanguageId,
-                Language = _context.Languages.Where(y=>y.Id == x.LanguageId).Select(y=>y.Name).FirstOrDefault()
+                CoverImageUrl = x.CoverImageUrl,
+                GalleryImgs = _context.BookGallery.Where(z => z.BookId == id).Select(z => new GalleryModel { URL = z.URL}).ToList(),
+                Language = _context.Languages.Where(y=>y.Id == x.LanguageId).Select(y=>y.Name).FirstOrDefault(),
+                PDFUrl = x.PDFUrl
             }).FirstOrDefaultAsync();
             return book;
         }

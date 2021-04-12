@@ -3,44 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcCoreBookstore.DB;
 
 namespace MvcCoreBookstore.Migrations
 {
     [DbContext(typeof(BookStoreContext))]
-    partial class BookStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20210407085445_addedImageColumn")]
+    partial class addedImageColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("MvcCoreBookstore.DB.BookGallery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("URL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookGallery");
-                });
 
             modelBuilder.Entity("MvcCoreBookstore.DB.Books", b =>
                 {
@@ -66,9 +45,6 @@ namespace MvcCoreBookstore.Migrations
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
-
-                    b.Property<string>("PDFUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Pages")
                         .HasColumnType("int");
@@ -102,15 +78,6 @@ namespace MvcCoreBookstore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
-                });
-
-            modelBuilder.Entity("MvcCoreBookstore.DB.BookGallery", b =>
-                {
-                    b.HasOne("MvcCoreBookstore.DB.Books", "Book")
-                        .WithMany("bookGallery")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MvcCoreBookstore.DB.Books", b =>
